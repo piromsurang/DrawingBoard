@@ -28,7 +28,7 @@ public class CompositeGObject extends GObject {
 		int y = super.y;
 		super.move(dX, dY);
 		for( GObject g : gObjects ) {
-			g.move( dX - x + g.x, dY - y + g.y );
+			g.move( dX, dY );
 		}
 	}
 	

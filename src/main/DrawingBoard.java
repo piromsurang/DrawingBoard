@@ -122,10 +122,12 @@ public class DrawingBoard extends JPanel {
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
+			int x1 = x;
+			int y1 = y;
 			x = e.getX();
 			y = e.getY();
 
-			target.move(x, y);
+			target.move(x-x1, y-y1);
 
 			repaint();
 		}
