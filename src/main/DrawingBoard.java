@@ -12,9 +12,9 @@ public class DrawingBoard extends JPanel {
 	private MouseAdapter mouseAdapter; 
 	private List<GObject> gObjects;
 	private GObject target;
-	
+
 	private int gridSize = 10;
-	
+
 	public DrawingBoard() {
 		gObjects = new ArrayList<GObject>();
 		mouseAdapter = new MAdapter();
@@ -22,18 +22,30 @@ public class DrawingBoard extends JPanel {
 		addMouseMotionListener(mouseAdapter);
 		setPreferredSize(new Dimension(800, 600));
 	}
-	
+
 	public void addGObject(GObject gObject) {
 		gObjects.add( gObject );
 		repaint();
 	}
-	
+
 	public void groupAll() {
 		CompositeGObject objects = new CompositeGObject();
+		boolean existedCompositeObject = false;
 		for( GObject g : gObjects ) {
-			g.deselected();
-			objects.add(g);
+			if( g instanceof CompositeGObject ) {
+				existedCompositeObject = true;
+			} 
 		}
+		
+		for( int i = 0 ; i < gObjects.size() ; i++ ) {
+			if( existedCompositeObject == true && gObjects.get(i) instanceof CompositeGObject ) {
+				objects = (CompositeGObject) gObjects.get(i);
+			} else {
+				gObjects.get(i).deselected();
+				objects.add(gObjects.get(i));
+			}
+		}
+
 		objects.recalculateRegion();
 		clear();
 		gObjects.add( objects );
@@ -44,12 +56,12 @@ public class DrawingBoard extends JPanel {
 		gObjects.remove( target );
 		repaint();
 	}
-	
+
 	public void clear() {
 		gObjects.clear();
 		repaint();
 	}
-	
+
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
@@ -85,14 +97,14 @@ public class DrawingBoard extends JPanel {
 
 		int x;
 		int y;
-		
+
 		private void deselectAll() {
 			for( GObject g : gObjects ) {
 				g.deselected();
 			}
 			repaint();
 		}
-		
+
 		@Override
 		public void mousePressed(MouseEvent e) {
 			x = e.getX();
@@ -112,11 +124,11 @@ public class DrawingBoard extends JPanel {
 		public void mouseDragged(MouseEvent e) {
 			x = e.getX();
 			y = e.getY();
-			
+
 			target.move(x, y);
-			
+
 			repaint();
 		}
 	}
-	
+
 }
